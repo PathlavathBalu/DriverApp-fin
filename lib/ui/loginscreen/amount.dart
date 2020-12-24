@@ -1,108 +1,253 @@
+import 'package:driverapp/api/rest_services.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({Key key}) : super(key: key);
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: MyHomePage(),
-    );
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  String _device_code;
+  String _auth_code;
+
+  void customerDetails() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.getString("customerDetail");
   }
-}
 
-class MyHomePage extends StatefulWidget {
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  List<Marker> allMarkers = [];
-
-  GoogleMapController _controller;
-
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  TextEditingController devCode = TextEditingController();
+  TextEditingController autCode = TextEditingController();
   @override
   void initState() {
-    // TODO: implement initState
+    // Login();
     super.initState();
-    allMarkers.add(Marker(
-        markerId: MarkerId('myMarker'),
-        draggable: true,
-        onTap: () {
-          print('Marker Tapped');
-        },
-        position: LatLng(40.7128, -74.0060)));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Maps'),
-      ),
-      body: Stack(
-        children: [Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          child: GoogleMap(
-            initialCameraPosition:
-                CameraPosition(target: LatLng(40.7128, -74.0060), zoom: 12.0),
-            markers: Set.from(allMarkers),
-            onMapCreated: mapCreated,
-          ),
-        ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: InkWell(
-            onTap: movetoBoston,
-            child: Container(
-              height: 40.0,
-              width: 40.0,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20.0),
-                color: Colors.green
+    return Stack(children: [
+      Container(
+          decoration: BoxDecoration(
+              image: DecorationImage(
+        image: AssetImage("images/bg-image.png"),
+        fit: BoxFit.cover,
+      ))),
+      Scaffold(
+          resizeToAvoidBottomInset: false,
+          backgroundColor: Colors.transparent,
+          body: ListView(children: <Widget>[
+            Text(
+              "Driver App Settings",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
               ),
-              child: Icon(Icons.forward, color: Colors.white),
             ),
-          ),
-        ),
-        Align(
-          alignment: Alignment.bottomRight,
-          child: InkWell(
-            onTap: movetoNewYork,
-            child: Container(
-              height: 40.0,
-              width: 40.0,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20.0),
-                color: Colors.red
+            // SizedBox(height:10),
+            Image.asset(
+              "images/logo.png",
+              height: 200,
+              width: 100,
+            ),
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25),
+                        border: Border.all(color: Colors.grey[400]),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: TextFormField(
+                          controller: autCode,
+                          // keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                              prefixIcon: Icon(
+                                Icons.qr_code_scanner_sharp,
+                                size: 20,
+                              ),
+                              border: InputBorder.none,
+                              hintText: 'Authentication Code'),
+                          validator: (String value) {
+                            if (value.isEmpty) {
+                              return 'Authentication Code is Required';
+                            }
+                            return null;
+                          },
+                          onSaved: (String value) {
+                            _auth_code = value;
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 15),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25),
+                        border: Border.all(color: Colors.grey[400]),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: TextFormField(
+                          controller: devCode,
+                          decoration: InputDecoration(
+                              prefixIcon: Icon(
+                                Icons.qr_code,
+                                size: 20,
+                              ),
+                              border: InputBorder.none,
+                              hintText: 'Device Code'),
+                          validator: (String value) {
+                            if (value.isEmpty) {
+                              return 'Device Code is Required';
+                            }
+
+                            return null;
+                          },
+                          onSaved: (String value) {
+                            _device_code = value;
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: 30,
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Color(0xffec280e),
+                            borderRadius: BorderRadius.circular(25),
+                            border: Border.all(color: Color(0xffec280e)),
+                          ),
+                          child: InkWell(
+                            onTap: () async {
+                              // Navigator.of(context).push(new MaterialPageRoute(
+                              //   builder: (BuildContext context) => new LoginScreen1(),
+                              // ));
+                              SharedPreferences preferences =
+                                  await SharedPreferences.getInstance();
+                              String customerDetails =
+                                  preferences.getString("user");
+                              print("*** customerDetail" + customerDetails);
+                              if (customerDetails == null) {
+                                print("Server Error");
+                              } else if (customerDetails
+                                  .toLowerCase()
+                                  .contains("1")) {
+                                print("Success");
+                              } else if (customerDetails
+                                  .toLowerCase()
+                                  .contains("2")) {
+                                if (devCode.text.trim().isNotEmpty &&
+                                    autCode.text.trim().isNotEmpty) {
+                                  Fluttertoast.showToast(
+                                      msg: "aaaa",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.CENTER,
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor: Colors.black,
+                                      textColor: Colors.blue,
+                                      fontSize: 16.0);
+                                } else {
+                                   print("Invalid Authcode");
+                                  Fluttertoast.showToast(
+                                      msg: "wrong Data",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.CENTER,
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor: Colors.black,
+                                      textColor: Colors.blue,
+                                      fontSize: 16.0);
+                                }
+                               
+                              } else if (customerDetails
+                                  .toLowerCase()
+                                  .contains("3")) {
+                                if (devCode.text.trim().isNotEmpty &&
+                                    autCode.text.trim().isNotEmpty) {
+                                      print("3");
+                                  Fluttertoast.showToast(
+                                      msg: "aaaa",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.CENTER,
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor: Colors.black,
+                                      textColor: Colors.blue,
+                                      fontSize: 16.0);
+                                } else {
+                                  Fluttertoast.showToast(
+                                      msg: "wrong Data",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.CENTER,
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor: Colors.black,
+                                      textColor: Colors.blue,
+                                      fontSize: 16.0);
+                                }
+                                print("Invalid device code");
+                              } else if (customerDetails
+                                  .toLowerCase()
+                                  .contains("4")) {
+                                print("Already used this device");
+                              } else {
+                                print("ok");
+                              }
+                              print("autCode.text.trim()" +autCode.text.trim());
+
+print("devCode.text.trim()" +devCode.text.trim());
+                              Login(autCode.text.trim(), devCode.text.trim());
+
+                              //print("*****************");
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 35, vertical: 12),
+                              child: RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                        text: "Submit ",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 15)),
+                                    WidgetSpan(
+                                      child: Icon(Icons.keyboard_arrow_right,
+                                          color: Colors.white, size: 17),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                ],
               ),
-              child: Icon(Icons.backspace, color: Colors.white),
-            ),
-          ),
-        )
-        ]
-      ),
-    );
-  }
-
-  void mapCreated(controller) {
-    setState(() {
-      _controller = controller;
-    });
-  }
-
-  movetoBoston() {
-    _controller.animateCamera(CameraUpdate.newCameraPosition(
-      CameraPosition(target: LatLng(42.3601, -71.0589), zoom: 14.0, bearing: 45.0, tilt: 45.0),
-    ));
-  }
-
-  movetoNewYork() {
-    _controller.animateCamera(CameraUpdate.newCameraPosition(
-      CameraPosition(target: LatLng(40.7128, -74.0060), zoom: 12.0),
-    ));
+            )
+          ]))
+    ]);
   }
 }
