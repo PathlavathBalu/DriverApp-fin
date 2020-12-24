@@ -1,4 +1,5 @@
 import 'package:driverapp/api/rest_services.dart';
+import 'package:driverapp/ui/loginscreen/home.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,8 +11,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  String _device_code;
-  String _auth_code;
+  String authCode;
+  String deviceCode;
 
   void customerDetails() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -85,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             return null;
                           },
                           onSaved: (String value) {
-                            _auth_code = value;
+                            deviceCode = value;
                           },
                         ),
                       ),
@@ -118,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             return null;
                           },
                           onSaved: (String value) {
-                            _device_code = value;
+                            authCode = value;
                           },
                         ),
                       ),
@@ -140,82 +141,85 @@ class _LoginScreenState extends State<LoginScreen> {
                             border: Border.all(color: Color(0xffec280e)),
                           ),
                           child: InkWell(
-                            onTap: () async {
+                            onTap: () {
+                              Login(autCode.text.trim(), devCode.text.trim())
+                                  .then((value) async {
+                                SharedPreferences preferences =
+                                    await SharedPreferences.getInstance();
+                                String customerDetails =
+                                    preferences.getString("user");
+                                print("*** customerDetail" + customerDetails);
+                                if (customerDetails == null) {
+                                  print("Server Error");
+                                } else if (customerDetails
+                                    .toLowerCase()
+                                    .contains("1")) {
+                                  print("Success");
+                                } else if (customerDetails
+                                    .toLowerCase()
+                                    .contains("2")) {
+                                  if (autCode.text.trim().isNotEmpty &&
+                                      devCode.text.trim().isNotEmpty) {
+                                    Fluttertoast.showToast(
+                                        msg: "myheart",
+                                        toastLength: Toast.LENGTH_SHORT,
+                                        gravity: ToastGravity.CENTER,
+                                        timeInSecForIosWeb: 1,
+                                        backgroundColor: Colors.black,
+                                        textColor: Colors.blue,
+                                        fontSize: 16.0);
+                                  } else {
+                                    print("Invalid Authcode");
+                                    Fluttertoast.showToast(
+                                        msg: "so bad",
+                                        toastLength: Toast.LENGTH_SHORT,
+                                        gravity: ToastGravity.CENTER,
+                                        timeInSecForIosWeb: 1,
+                                        backgroundColor: Colors.black,
+                                        textColor: Colors.blue,
+                                        fontSize: 16.0);
+                                  }
+                                } else if (customerDetails
+                                    .toLowerCase()
+                                    .contains("3")) {
+                                  if (autCode.text.trim().isNotEmpty &&
+                                      devCode.text.trim().isNotEmpty) {
+                                    print("3");
+                                    Fluttertoast.showToast(
+                                        msg: "aaaa",
+                                        toastLength: Toast.LENGTH_SHORT,
+                                        gravity: ToastGravity.CENTER,
+                                        timeInSecForIosWeb: 1,
+                                        backgroundColor: Colors.black,
+                                        textColor: Colors.blue,
+                                        fontSize: 16.0);
+                                  } else {
+                                    Fluttertoast.showToast(
+                                        msg: "wrong Data",
+                                        toastLength: Toast.LENGTH_SHORT,
+                                        gravity: ToastGravity.CENTER,
+                                        timeInSecForIosWeb: 1,
+                                        backgroundColor: Colors.black,
+                                        textColor: Colors.blue,
+                                        fontSize: 16.0);
+                                  }
+                                  print("Invalid device code");
+                                } else if (customerDetails
+                                    .toLowerCase()
+                                    .contains("4")) {
+                                  print("Already used this device");
+                                } else {
+                                  print("ok");
+                                }
+                                print("autCode.text.trim()" +
+                                    autCode.text.trim());
+
+                                print("devCode.text.trim()" +
+                                    devCode.text.trim());
+                              });
                               // Navigator.of(context).push(new MaterialPageRoute(
                               //   builder: (BuildContext context) => new LoginScreen1(),
                               // ));
-                              SharedPreferences preferences =
-                                  await SharedPreferences.getInstance();
-                              String customerDetails =
-                                  preferences.getString("user");
-                              print("*** customerDetail" + customerDetails);
-                              if (customerDetails == null) {
-                                print("Server Error");
-                              } else if (customerDetails
-                                  .toLowerCase()
-                                  .contains("1")) {
-                                print("Success");
-                              } else if (customerDetails
-                                  .toLowerCase()
-                                  .contains("2")) {
-                                if (devCode.text.trim().isNotEmpty &&
-                                    autCode.text.trim().isNotEmpty) {
-                                  Fluttertoast.showToast(
-                                      msg: "aaaa",
-                                      toastLength: Toast.LENGTH_SHORT,
-                                      gravity: ToastGravity.CENTER,
-                                      timeInSecForIosWeb: 1,
-                                      backgroundColor: Colors.black,
-                                      textColor: Colors.blue,
-                                      fontSize: 16.0);
-                                } else {
-                                   print("Invalid Authcode");
-                                  Fluttertoast.showToast(
-                                      msg: "wrong Data",
-                                      toastLength: Toast.LENGTH_SHORT,
-                                      gravity: ToastGravity.CENTER,
-                                      timeInSecForIosWeb: 1,
-                                      backgroundColor: Colors.black,
-                                      textColor: Colors.blue,
-                                      fontSize: 16.0);
-                                }
-                               
-                              } else if (customerDetails
-                                  .toLowerCase()
-                                  .contains("3")) {
-                                if (devCode.text.trim().isNotEmpty &&
-                                    autCode.text.trim().isNotEmpty) {
-                                      print("3");
-                                  Fluttertoast.showToast(
-                                      msg: "aaaa",
-                                      toastLength: Toast.LENGTH_SHORT,
-                                      gravity: ToastGravity.CENTER,
-                                      timeInSecForIosWeb: 1,
-                                      backgroundColor: Colors.black,
-                                      textColor: Colors.blue,
-                                      fontSize: 16.0);
-                                } else {
-                                  Fluttertoast.showToast(
-                                      msg: "wrong Data",
-                                      toastLength: Toast.LENGTH_SHORT,
-                                      gravity: ToastGravity.CENTER,
-                                      timeInSecForIosWeb: 1,
-                                      backgroundColor: Colors.black,
-                                      textColor: Colors.blue,
-                                      fontSize: 16.0);
-                                }
-                                print("Invalid device code");
-                              } else if (customerDetails
-                                  .toLowerCase()
-                                  .contains("4")) {
-                                print("Already used this device");
-                              } else {
-                                print("ok");
-                              }
-                              print("autCode.text.trim()" +autCode.text.trim());
-
-print("devCode.text.trim()" +devCode.text.trim());
-                              Login(autCode.text.trim(), devCode.text.trim());
 
                               //print("*****************");
                             },

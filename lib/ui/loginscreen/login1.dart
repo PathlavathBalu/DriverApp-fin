@@ -157,9 +157,9 @@ class _LoginScreen1State extends State<LoginScreen1> {
                           horizontal: 35, vertical: 12),
                       child: InkWell(
                         //            onTap: () {
-                        //   Navigator.of(context).push(new MaterialPageRoute(
-                        //     builder: (BuildContext context) => new Home(),
-                        //   ));
+                          // Navigator.of(context).push(new MaterialPageRoute(
+                          //   builder: (BuildContext context) => new Home(),
+                          // ));
                         // },
                         onTap: () {
                           showDialog(
