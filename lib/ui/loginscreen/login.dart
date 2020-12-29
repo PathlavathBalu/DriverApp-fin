@@ -1,5 +1,5 @@
 import 'package:driverapp/api/rest_services.dart';
-import 'package:driverapp/ui/loginscreen/home.dart';
+import 'package:driverapp/ui/loginscreen/login1.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -86,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             return null;
                           },
                           onSaved: (String value) {
-                            deviceCode = value;
+                            authCode = value;
                           },
                         ),
                       ),
@@ -104,6 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 15),
                         child: TextFormField(
                           controller: devCode,
+                          keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                               prefixIcon: Icon(
                                 Icons.qr_code,
@@ -119,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             return null;
                           },
                           onSaved: (String value) {
-                            authCode = value;
+                            deviceCode = value;
                           },
                         ),
                       ),
@@ -143,25 +144,40 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: InkWell(
                             onTap: () {
                               Login(autCode.text.trim(), devCode.text.trim())
-                                  .then((value) async {
+                                  .then((result) async {
                                 SharedPreferences preferences =
                                     await SharedPreferences.getInstance();
-                                String customerDetails =
-                                    preferences.getString("user");
+
+                                String customerDetails = preferences.getString(
+                                  "user",
+                                );
                                 print("*** customerDetail" + customerDetails);
                                 if (customerDetails == null) {
                                   print("Server Error");
                                 } else if (customerDetails
                                     .toLowerCase()
                                     .contains("1")) {
+                                  Fluttertoast.showToast(
+                                      msg: "Login Sucess",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.CENTER,
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor: Colors.black,
+                                      textColor: Colors.blue,
+                                      fontSize: 16.0);
                                   print("Success");
+                                  Navigator.of(context)
+                                      .push(new MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        new LoginScreen1(),
+                                  ));
                                 } else if (customerDetails
                                     .toLowerCase()
                                     .contains("2")) {
                                   if (autCode.text.trim().isNotEmpty &&
                                       devCode.text.trim().isNotEmpty) {
                                     Fluttertoast.showToast(
-                                        msg: "myheart",
+                                        msg: "Invalid Authcode",
                                         toastLength: Toast.LENGTH_SHORT,
                                         gravity: ToastGravity.CENTER,
                                         timeInSecForIosWeb: 1,
@@ -171,7 +187,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   } else {
                                     print("Invalid Authcode");
                                     Fluttertoast.showToast(
-                                        msg: "so bad",
+                                        msg: "Invalid Authcode",
                                         toastLength: Toast.LENGTH_SHORT,
                                         gravity: ToastGravity.CENTER,
                                         timeInSecForIosWeb: 1,
@@ -186,7 +202,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       devCode.text.trim().isNotEmpty) {
                                     print("3");
                                     Fluttertoast.showToast(
-                                        msg: "aaaa",
+                                        msg: "Invalid deviceCode",
                                         toastLength: Toast.LENGTH_SHORT,
                                         gravity: ToastGravity.CENTER,
                                         timeInSecForIosWeb: 1,
@@ -195,7 +211,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         fontSize: 16.0);
                                   } else {
                                     Fluttertoast.showToast(
-                                        msg: "wrong Data",
+                                        msg: "Invalid data",
                                         toastLength: Toast.LENGTH_SHORT,
                                         gravity: ToastGravity.CENTER,
                                         timeInSecForIosWeb: 1,
@@ -207,8 +223,24 @@ class _LoginScreenState extends State<LoginScreen> {
                                 } else if (customerDetails
                                     .toLowerCase()
                                     .contains("4")) {
+                                  Fluttertoast.showToast(
+                                      msg: "Already used this device",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.CENTER,
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor: Colors.black,
+                                      textColor: Colors.blue,
+                                      fontSize: 16.0);
                                   print("Already used this device");
                                 } else {
+                                  Fluttertoast.showToast(
+                                      msg: "Faild to verify",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.CENTER,
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor: Colors.black,
+                                      textColor: Colors.blue,
+                                      fontSize: 16.0);
                                   print("ok");
                                 }
                                 print("autCode.text.trim()" +
@@ -217,9 +249,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                 print("devCode.text.trim()" +
                                     devCode.text.trim());
                               });
-                              // Navigator.of(context).push(new MaterialPageRoute(
-                              //   builder: (BuildContext context) => new LoginScreen1(),
-                              // ));
+                              Navigator.of(context).push(new MaterialPageRoute(
+                                builder: (BuildContext context) => new LoginScreen1(),
+                              ));
 
                               //print("*****************");
                             },

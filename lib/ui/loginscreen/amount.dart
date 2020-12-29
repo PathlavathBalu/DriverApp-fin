@@ -1,253 +1,299 @@
-import 'package:driverapp/api/rest_services.dart';
-import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key key}) : super(key: key);
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  // This widget is the root of your application.
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: MyHomePage(),
+    );
+  }
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  String _device_code;
-  String _auth_code;
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
 
-  void customerDetails() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    preferences.getString("customerDetail");
-  }
-
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController devCode = TextEditingController();
-  TextEditingController autCode = TextEditingController();
+class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
-    // Login();
+    _getStateList();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      Container(
-          decoration: BoxDecoration(
-              image: DecorationImage(
-        image: AssetImage("images/bg-image.png"),
-        fit: BoxFit.cover,
-      ))),
-      Scaffold(
-          resizeToAvoidBottomInset: false,
-          backgroundColor: Colors.transparent,
-          body: ListView(children: <Widget>[
-            Text(
-              "Driver App Settings",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Dynamic DropDownList REST API'),
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            alignment: Alignment.topCenter,
+            margin: EdgeInsets.only(bottom: 100, top: 100),
+            child: Text(
+              'KDTechs',
+              style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20),
             ),
-            // SizedBox(height:10),
-            Image.asset(
-              "images/logo.png",
-              height: 200,
-              width: 100,
-            ),
-            Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25),
-                        border: Border.all(color: Colors.grey[400]),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                        child: TextFormField(
-                          controller: autCode,
-                          // keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                              prefixIcon: Icon(
-                                Icons.qr_code_scanner_sharp,
-                                size: 20,
-                              ),
-                              border: InputBorder.none,
-                              hintText: 'Authentication Code'),
-                          validator: (String value) {
-                            if (value.isEmpty) {
-                              return 'Authentication Code is Required';
-                            }
-                            return null;
-                          },
-                          onSaved: (String value) {
-                            _auth_code = value;
-                          },
+          ),
+          //======================================================== State
+
+          Container(
+            padding: EdgeInsets.only(left: 15, right: 15, top: 5),
+            color: Colors.white,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Expanded(
+                  child: DropdownButtonHideUnderline(
+                    child: ButtonTheme(
+                      alignedDropdown: true,
+                      child: DropdownButton<String>(
+                        value: _myState,
+                        iconSize: 30,
+                        icon: (null),
+                        style: TextStyle(
+                          color: Colors.black54,
+                          fontSize: 16,
                         ),
+                        hint: Text('Select State'),
+                        onChanged: (String newValue) {
+                          setState(() {
+                            _myState = newValue;
+                            _getCitiesList();
+                            print(_myState);
+                          });
+                        },
+                        items: statesList?.map((item) {
+                              return new DropdownMenuItem(
+                                child: new Text(item['name']),
+                                value: item['id'].toString(),
+                              );
+                            })?.toList() ??
+                            [],
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 15),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25),
-                        border: Border.all(color: Colors.grey[400]),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                        child: TextFormField(
-                          controller: devCode,
-                          decoration: InputDecoration(
-                              prefixIcon: Icon(
-                                Icons.qr_code,
-                                size: 20,
-                              ),
-                              border: InputBorder.none,
-                              hintText: 'Device Code'),
-                          validator: (String value) {
-                            if (value.isEmpty) {
-                              return 'Device Code is Required';
-                            }
+                ),
+              ],
+            ),
+          ),
+        
+          SizedBox(
+            height: 30,
+          ),
 
-                            return null;
-                          },
-                          onSaved: (String value) {
-                            _device_code = value;
-                          },
+          //======================================================== City
+
+          Container(
+            padding: EdgeInsets.only(left: 15, right: 15, top: 5),
+            color: Colors.white,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Expanded(
+                  child: DropdownButtonHideUnderline(
+                    child: ButtonTheme(
+                      alignedDropdown: true,
+                      child: DropdownButton<String>(
+                        value: _myCity,
+                        iconSize: 30,
+                        icon: (null),
+                        style: TextStyle(
+                          color: Colors.black54,
+                          fontSize: 16,
                         ),
+                        hint: Text('Select City'),
+                        onChanged: (String newValue) {
+                          setState(() {
+                            _myCity = newValue;
+                            print(_myCity);
+                          });
+                        },
+                        items: citiesList?.map((item) {
+                              return new DropdownMenuItem(
+                                child: new Text(item['name']),
+                                value: item['id'].toString(),
+                              );
+                            })?.toList() ??
+                            [],
                       ),
                     ),
                   ),
-                  SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: 30,
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Color(0xffec280e),
-                            borderRadius: BorderRadius.circular(25),
-                            border: Border.all(color: Color(0xffec280e)),
-                          ),
-                          child: InkWell(
-                            onTap: () async {
-                              // Navigator.of(context).push(new MaterialPageRoute(
-                              //   builder: (BuildContext context) => new LoginScreen1(),
-                              // ));
-                              SharedPreferences preferences =
-                                  await SharedPreferences.getInstance();
-                              String customerDetails =
-                                  preferences.getString("user");
-                              print("*** customerDetail" + customerDetails);
-                              if (customerDetails == null) {
-                                print("Server Error");
-                              } else if (customerDetails
-                                  .toLowerCase()
-                                  .contains("1")) {
-                                print("Success");
-                              } else if (customerDetails
-                                  .toLowerCase()
-                                  .contains("2")) {
-                                if (devCode.text.trim().isNotEmpty &&
-                                    autCode.text.trim().isNotEmpty) {
-                                  Fluttertoast.showToast(
-                                      msg: "aaaa",
-                                      toastLength: Toast.LENGTH_SHORT,
-                                      gravity: ToastGravity.CENTER,
-                                      timeInSecForIosWeb: 1,
-                                      backgroundColor: Colors.black,
-                                      textColor: Colors.blue,
-                                      fontSize: 16.0);
-                                } else {
-                                   print("Invalid Authcode");
-                                  Fluttertoast.showToast(
-                                      msg: "wrong Data",
-                                      toastLength: Toast.LENGTH_SHORT,
-                                      gravity: ToastGravity.CENTER,
-                                      timeInSecForIosWeb: 1,
-                                      backgroundColor: Colors.black,
-                                      textColor: Colors.blue,
-                                      fontSize: 16.0);
-                                }
-                               
-                              } else if (customerDetails
-                                  .toLowerCase()
-                                  .contains("3")) {
-                                if (devCode.text.trim().isNotEmpty &&
-                                    autCode.text.trim().isNotEmpty) {
-                                      print("3");
-                                  Fluttertoast.showToast(
-                                      msg: "aaaa",
-                                      toastLength: Toast.LENGTH_SHORT,
-                                      gravity: ToastGravity.CENTER,
-                                      timeInSecForIosWeb: 1,
-                                      backgroundColor: Colors.black,
-                                      textColor: Colors.blue,
-                                      fontSize: 16.0);
-                                } else {
-                                  Fluttertoast.showToast(
-                                      msg: "wrong Data",
-                                      toastLength: Toast.LENGTH_SHORT,
-                                      gravity: ToastGravity.CENTER,
-                                      timeInSecForIosWeb: 1,
-                                      backgroundColor: Colors.black,
-                                      textColor: Colors.blue,
-                                      fontSize: 16.0);
-                                }
-                                print("Invalid device code");
-                              } else if (customerDetails
-                                  .toLowerCase()
-                                  .contains("4")) {
-                                print("Already used this device");
-                              } else {
-                                print("ok");
-                              }
-                              print("autCode.text.trim()" +autCode.text.trim());
+                ),
+              ],
+            ),
+          ),
+       
+        ],
+      ),
+    );
+  }
 
-print("devCode.text.trim()" +devCode.text.trim());
-                              Login(autCode.text.trim(), devCode.text.trim());
+  //=============================================================================== Api Calling here
 
-                              //print("*****************");
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 35, vertical: 12),
-                              child: RichText(
-                                text: TextSpan(
-                                  children: [
-                                    TextSpan(
-                                        text: "Submit ",
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 15)),
-                                    WidgetSpan(
-                                      child: Icon(Icons.keyboard_arrow_right,
-                                          color: Colors.white, size: 17),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            )
-          ]))
-    ]);
+//CALLING STATE API HERE
+// Get State information by API
+  List statesList;
+  String _myState;
+
+  String stateInfoUrl = 'http://cleanions.bestweb.my/api/location/get_state';
+  Future<String> _getStateList() async {
+    await http.post(stateInfoUrl, headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }, body: {
+      "api_key": '25d55ad283aa400af464c76d713c07ad',
+    }).then((response) {
+      var data = json.decode(response.body);
+
+//      print(data);
+      setState(() {
+        statesList = data['state'];
+      });
+    });
+  }
+
+  // Get State information by API
+  List citiesList;
+  String _myCity;
+
+  String cityInfoUrl =
+      'http://cleanions.bestweb.my/api/location/get_city_by_state_id';
+  Future<String> _getCitiesList() async {
+    await http.post(cityInfoUrl, headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }, body: {
+      "api_key": '25d55ad283aa400af464c76d713c07ad',
+      "state_id": _myState,
+    }).then((response) {
+      var data = json.decode(response.body);
+
+      setState(() {
+        citiesList = data['cities'];
+      });
+    });
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+// FutureBuilder(
+//   future: provider.getsyllabus() ??
+//       PostRestServices.getSyllabus(),
+//   builder: (context, snapshot) {
+//     List<Map<String, dynamic>> syllabus =
+//         List();
+
+//     switch (snapshot.connectionState) {
+//       case ConnectionState.waiting:
+//         syllabus = List();
+
+//         // Loader();
+
+//         break;
+
+//       default:
+//         if (snapshot.hasError) {
+//           syllabus = List();
+
+//           // return Handler(snapshot.error, reloadSyllabus);
+
+//         }
+//         if (snapshot.data.flags.flag == 2) {
+//           syllabus = List();
+//         }
+//         // return ErrorCatcher(snapshot.data.flags.emsg);
+//         else {
+//           syllabus =
+//               snapshot.data.mapExam.examLists;
+
+//           if (provider.getsyllabus() == null) {
+//             provider.setSyllabus(
+//                 PostRestServices.getSyllabus());
+//           }
+//         }
+//     }
+
+//     return DropdownButtonFormField(
+//       iconEnabledColor: Strings.themeColor,
+//       icon: Icon(
+//         Icons.keyboard_arrow_down,
+//         size: 24,
+//         color: Color(0xFF09557A),
+//       ),
+
+//       isExpanded: true,
+//       hint: Padding(
+//         padding:
+//             const EdgeInsets.only(bottom: 5),
+//         child: Text(
+//           "Select Syllabus",
+//           style: TextStyle(
+//             color: Colors.grey,
+//             fontSize: 10,
+//           ),
+//         ),
+//       ),
+
+//       // value: _to,
+//       // hint: Text(_chooseOffice),
+//       decoration: InputDecoration(
+//           contentPadding: EdgeInsets.only(
+//               bottom: 10, left: 5),
+//           hintStyle: TextStyle(
+//               color: Colors.grey,
+//               fontSize: Strings.fontSize),
+//           // hintText: "Syllabus Name",
+
+//           enabledBorder: UnderlineInputBorder(
+//               borderSide: BorderSide(
+//                   color: Colors.transparent))),
+
+//       onChanged: (newValue) {
+//         print(newValue);
+
+//         exam.setExamId(newValue["examId"]);
+//         examCatId = newValue["examCatId"];
+
+//         // setState(() {
+//         //   examId = newValue["examId"];
+//         //   // getSubject = PostRestServices.getSubject(
+//         //   //     newValue["examId"]);
+//         // });
+//       },
+//       items: syllabus != null
+//           ? syllabus.map<DropdownMenuItem>(
+//               (Map<String, dynamic> slb) {
+//               return DropdownMenuItem(
+//                   child: Text(slb["examName"],
+//                       style: TextStyle(
+//                           color: Colors.grey,
+//                           fontSize: Strings
+//                               .fontSize)),
+//                   value: slb);
+//             }).toList()
+//           : Loader(),
+//     );
+//   }
+//   ),
