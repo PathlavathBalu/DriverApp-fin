@@ -1,4 +1,5 @@
 import 'package:driverapp/api/rest_services.dart';
+import 'package:driverapp/model/slide_route.dart';
 import 'package:driverapp/ui/loginscreen/login1.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -166,11 +167,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                       textColor: Colors.blue,
                                       fontSize: 16.0);
                                   print("Success");
-                                  Navigator.of(context)
-                                      .push(new MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        new LoginScreen1(),
-                                  ));
+
+                                  Navigator.push(
+                                      context,
+                                      SlideLeftRoute(
+                                          page: LoginScreen1(
+                                              autCode.text.trim(),
+                                              devCode.text.trim(),
+                                              
+                                              )));
                                 } else if (customerDetails
                                     .toLowerCase()
                                     .contains("2")) {
@@ -249,9 +254,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                 print("devCode.text.trim()" +
                                     devCode.text.trim());
                               });
-                              Navigator.of(context).push(new MaterialPageRoute(
-                                builder: (BuildContext context) => new LoginScreen1(),
-                              ));
+                              // Navigator.of(context).push(new MaterialPageRoute(
+                              //   builder: (BuildContext context) =>
+                              //       new LoginScreen1(),
+                              // ));
 
                               //print("*****************");
                             },

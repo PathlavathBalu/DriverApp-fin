@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:driverapp/model/driverlist_model.dart';
+import 'package:driverapp/model/loginAuth.dart';
 import 'package:driverapp/model/login_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -47,7 +47,99 @@ Future<LoginModel> Login(String authCode, String deviceCode) async {
   }
 }
 
-// Future<DriverList> driverList() async {
+
+Future<LoginAuth> loginAuthntication(String deviceCode, String authCode, String staffId, String passcode) async {
+  Dio client = Dio();
+  var responseJson;
+  SharedPreferences sharedPreferences;
+
+  try {
+    FormData formData = new FormData.fromMap({
+      'device_code': deviceCode,
+      'task': 'login_authentication',
+      'app_name': 'driver',
+      'staff_id': staffId,
+      'auth_code': authCode,
+      'password': passcode
+    });
+
+    final response = await client.post(
+      'https://www.uat.deveposhybrid.uk/index.php/webservices',
+      data: formData,
+    );
+    print("suggestions response.body" + formData.fields.toString());
+    responseJson = json.decode(response.toString());
+    if (response.statusCode == 503) {
+      throw Exception('Check your LoginAuthntcation');
+    }
+
+    if (response.statusCode == 200) {
+      print(
+          'api_provider LoginAuthntcation responseJson==' + responseJson.toString());
+
+      sharedPreferences = await SharedPreferences.getInstance();
+      Map login_auth = jsonDecode(response.toString());
+      String message = jsonEncode(LoginAuth.fromJson(login_auth));
+      sharedPreferences.setString('message', message);
+      print('message' + message);
+    } else {
+      throw Exception('Failed message LoginAuthntcation');
+    }
+  } catch (error) {
+    if (error is SocketException) {
+      throw Exception('Check your internet LoginAuthntcation');
+    }
+  }
+}
+
+
+
+Future<dynamic> floatAmount() async {
+    Dio client = Dio();
+  var floatAmnt;
+  SharedPreferences sharedPreferences;
+
+  try {
+    FormData formData = new FormData.fromMap({
+      'device_code': '6635',
+      'task': 'driver_float_amount',
+      'app_name': 'driver',
+      'staff_id': '68',
+      'auth_code': 'HZFAYW',
+      'float_amount' : '40',
+    });
+
+    final response = await client.post(
+      'https://www.uat.deveposhybrid.uk/index.php/webservices',
+      data: formData,
+    );
+    print("suggestions response.body" + formData.fields.toString());
+    floatAmnt = json.decode(response.toString());
+    if (response.statusCode == 503) {
+      throw Exception('Check your Float Amount');
+    }
+
+    if (response.statusCode == 200) {
+      print(
+          'api_provider Float Amount response==' + floatAmnt.toString());
+
+      sharedPreferences = await SharedPreferences.getInstance();
+      Map float_amount = jsonDecode(response.toString());
+      String float = jsonEncode(LoginAuth.fromJson(float_amount));
+      sharedPreferences.setString('float', float);
+      print('float' + float);
+    } else {
+      throw Exception('Failed float Amount');
+    }
+  } catch (error) {
+    if (error is SocketException) {
+      throw Exception('Check your floatAmnt');
+    }
+  }
+}
+
+
+// Future<List<DriverList>> driverDetail() async {
 //   Dio client = Dio();
 //   var responseJson;
 
@@ -81,4 +173,5 @@ Future<LoginModel> Login(String authCode, String deviceCode) async {
 //       throw Exception('Check your driverList connection');
 //     }
 //   }
+  
 // }

@@ -1,3 +1,4 @@
+import 'package:driverapp/api/rest_services.dart';
 import 'package:driverapp/ui/loginscreen/home.dart';
 import 'package:flutter/material.dart';
 
@@ -177,9 +178,11 @@ class _NumPadState extends State<NumPad> with SingleTickerProviderStateMixin {
                             ),
                             child: FlatButton(
                               onPressed: () {
-                                  Navigator.of(context).push(new MaterialPageRoute(
-                  builder: (BuildContext context) => new Home(),
-                ));
+                                // Navigator.of(context)
+                                //     .push(new MaterialPageRoute(
+                                //   builder: (BuildContext context) => new Home(),
+                                // ));
+                                floatAmount();
                               },
                               child: Padding(
                                 padding:

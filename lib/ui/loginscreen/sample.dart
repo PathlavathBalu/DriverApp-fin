@@ -1,23 +1,10 @@
-import 'package:driverapp/api/delivery.dart';
-import 'package:driverapp/api/rest_services.dart';
+import 'package:driverapp/model/driverlist_model.dart';
 import 'package:driverapp/ui/keypad/numpad.dart';
 import 'package:driverapp/ui/keypad/numpad_controller.dart';
-import 'package:driverapp/ui/loginscreen/home.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen1 extends StatefulWidget {
-  final String authcode;
-  final String devcode;
-// final String staffId;
-// final String passcode;
-
-  // receive data from the FirstScreen as a parameter
-  LoginScreen1(this.authcode, this.devcode);
-
-  String staffId;
-
+  LoginScreen1({Key key}) : super(key: key);
   @override
   _LoginScreen1State createState() => _LoginScreen1State();
 }
@@ -37,33 +24,32 @@ class _LoginScreen1State extends State<LoginScreen1> {
 
   //final  String data =
   //final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  List _staffList = [];
+  List<DriverList> _staffLIst = [];
+  String staffListregion;
   TextEditingController passCode = TextEditingController();
 
-  // var _currencies = [
-  //     "Please Select Driver",
-  //   "Food",
-  //   "Transport",
-  //   "Personal",
-  //   "Shopping",
-  //   "Medical",
-  //   "Rent",
-  //   "Movie",
-  //   "Salary",
-
-  // ];
-  var _currentSelectedValue = '';
-
-  var selectedVal;
-
-  String staffId;
+  var _currencies = [
+    "Please Select Driver",
+    "paul",
+    "Tony",
+    "epos support",
+    "Chandana",
+    "Madhu Test",
+    "Bharan Sharma",
+    "Syed Ravi",
+    "Kuran Kumar J",
+    "Gavin Bernes"
+  ];
+  String _currentSelectedValue = 'Please Select Driver';
 
   NumPadController npc = NumPadController();
   @override
   void initState() {
     super.initState();
-
-    getData();
+    // _staffLIst = API.driverList().then((result) {
+    // syllabus = result.staffList;
+    // });
+    print("driver*****");
     /* Listener for the numpad controller. */
     npc.addListener(() {
       String realCode = "1111";
@@ -76,27 +62,19 @@ class _LoginScreen1State extends State<LoginScreen1> {
     // getChapter =  API.getChapter(null);
   }
 
-  getData() async {
-    await API.driverList().then((result) {
-      print(result);
-
-      setState(() {
-        _staffList = result["staff_list"];
-      });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    // final json = JsonDecoder().convert(driverList());
+    // _staffLIst = (json).map<DriverList>((item) => DriverList.fromJson(item)).toList();
+    // staffListregion = _staffLIst[0].staffList[0].staffName;
+
     return Stack(children: [
-      Center(
-        child: Container(
-            decoration: BoxDecoration(
-                image: DecorationImage(
-          image: AssetImage("images/bg-image.png"),
-          fit: BoxFit.cover,
-        ))),
-      ),
+      Container(
+          decoration: BoxDecoration(
+              image: DecorationImage(
+        image: AssetImage("images/bg-image.png"),
+        fit: BoxFit.cover,
+      ))),
       Scaffold(
           resizeToAvoidBottomInset: false,
           backgroundColor: Colors.transparent,
@@ -113,12 +91,13 @@ class _LoginScreen1State extends State<LoginScreen1> {
                 ],
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 0),
             Image.asset(
               "images/logo.png",
               height: 200,
               width: 100,
             ),
+
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
               child: Container(
@@ -133,32 +112,30 @@ class _LoginScreen1State extends State<LoginScreen1> {
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: InputDecorator(
                         decoration: InputDecoration(
-                          hintStyle: TextStyle(
-                            color: Colors.black,
+                          labelStyle: TextStyle(
+                            color: Colors.grey,
                           ),
                           errorStyle: TextStyle(
                               color: Colors.redAccent, fontSize: 16.0),
-                          hintText: 'Please select driver',
+                          hintText: 'Please select expense',
                           border: InputBorder.none,
                         ),
-                        isFocused:
-                            _currentSelectedValue == 'Please select driver',
+                        isEmpty: _currentSelectedValue == '',
                         child: DropdownButtonHideUnderline(
-                          child: DropdownButton(
-                            value: selectedVal,
+                          child: DropdownButton<String>(
+                            value: _currentSelectedValue,
                             isDense: true,
-                            onChanged: (newValue) {
+                            onChanged: (String newValue) {
                               setState(() {
-                                selectedVal = newValue;
-                                _currentSelectedValue = newValue["staff_name"];
-                                staffId = newValue["staff_id"];
-                                state.didChange(newValue["staff_name"]);
+                                _currentSelectedValue = newValue;
+                                state.didChange(newValue);
+                                
                               });
                             },
-                            items: _staffList.map((value) {
-                              return DropdownMenuItem<Map<String, dynamic>>(
+                            items: _currencies.map((String value) {
+                              return DropdownMenuItem<String>(
                                 value: value,
-                                child: Text(value["staff_name"]),
+                                child: Text(value),
                               );
                             }).toList(),
                           ),
@@ -169,6 +146,7 @@ class _LoginScreen1State extends State<LoginScreen1> {
                 ),
               ),
             ),
+
             SizedBox(
               height: 10,
             ),
@@ -197,9 +175,9 @@ class _LoginScreen1State extends State<LoginScreen1> {
                                   Icons.qr_code_scanner_sharp,
                                   size: 20,
                                 )),
-                            // validator: (val) =>
-                            //     val.length < 8 ? 'Passcode too short.' : null,
-                            // onSaved: (val) => _passCode = val,
+                            validator: (val) =>
+                                val.length < 8 ? 'Passcode too short.' : null,
+                            onSaved: (val) => _passCode = val,
                             obscureText: _obscureText,
                           ),
                         ),
@@ -214,6 +192,35 @@ class _LoginScreen1State extends State<LoginScreen1> {
                 ),
               ),
             ),
+
+            //       Center(
+            //   child: new Column(
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     children: <Widget>[
+            //       DropdownButtonHideUnderline(
+            //         child: new DropdownButton<String>(
+            //           hint: new Text("Select Region"),
+            //           value: staffListregion,
+            //           isDense: true,
+            //           onChanged: (String newValue) {
+            //             setState(() {
+            //               staffListregion = newValue;
+            //             });
+            //             print(staffListregion);
+            //           },
+            //           items: _staffLIst.map((DriverList map) {
+            //             return new DropdownMenuItem<String>(
+            //               value: map.staffList[0].staffId,
+            //               child: new Text(map.staffList[0].staffName,
+            //                   style: new TextStyle(color: Colors.black)),
+            //             );
+            //           }).toList(),
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
+
             SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25),
@@ -233,17 +240,20 @@ class _LoginScreen1State extends State<LoginScreen1> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 35, vertical: 12),
                       child: InkWell(
+                        //onTap: () async {
+                        // Navigator.of(context).push(new MaterialPageRoute(
+                        //   builder: (BuildContext context) => new Home(),
+                        // ));
+
+                        // driverList();
+                        // API.deliveryDetail()
+                        //             .then((result) async {
+                        //           print("**********"+result.toString());
+                        //             });
+
+                        //   },
                         onTap: () {
-                          loginAuthntication(widget.authcode, widget.devcode,
-                                  staffId, passCode.text.trim())
-                              .then((result) async {
-                            SharedPreferences preferences =
-                                await SharedPreferences.getInstance();
-                            String customerDetails = preferences.getString(
-                              "message",
-                            );
-                            print("*** customerDetail" + customerDetails);
-                              showDialog(
+                          showDialog(
                               context: context,
                               builder: (context) {
                                 return Dialog(
@@ -258,70 +268,6 @@ class _LoginScreen1State extends State<LoginScreen1> {
                                   ),
                                 );
                               });
-                            // if (customerDetails == "Already logged in") {
-                            //   Fluttertoast.showToast(
-                            //       msg: customerDetails,
-                            //       toastLength: Toast.LENGTH_SHORT,
-                            //       gravity: ToastGravity.CENTER,
-                            //       timeInSecForIosWeb: 1,
-                            //       backgroundColor: Colors.black,
-                            //       textColor: Colors.blue,
-                            //       fontSize: 16.0);
-                            //   print("Success");
-                            //   showDialog(
-                            //       context: context,
-                            //       builder: (context) {
-                            //         return Dialog(
-                            //           shape: RoundedRectangleBorder(
-                            //               borderRadius:
-                            //                   BorderRadius.circular(40)),
-                            //           elevation: 16,
-                            //           child: Container(
-                            //             child: NumPad(
-                            //               controller: npc,
-                            //               pinInputLength: 9,
-                            //             ),
-                            //           ),
-                            //         );
-                            //       });
-                            // } else {
-                            //   Fluttertoast.showToast(
-                            //       msg: customerDetails,
-                            //       toastLength: Toast.LENGTH_SHORT,
-                            //       gravity: ToastGravity.CENTER,
-                            //       timeInSecForIosWeb: 1,
-                            //       backgroundColor: Colors.black,
-                            //       textColor: Colors.blue,
-                            //       fontSize: 16.0);
-                         
-                           // }
-                          });
-                          // .then((result) async {
-                          // SharedPreferences preferences =
-                          //     await SharedPreferences.getInstance();
-
-                          // String customerDetails = preferences.getString(
-                          //   "message",
-                          // );
-
-                          //       print("*** customerDetail" + customerDetails);
-                          // }
-
-                          // showDialog(
-                          //     context: context,
-                          //     builder: (context) {
-                          //       return Dialog(
-                          //         shape: RoundedRectangleBorder(
-                          //             borderRadius: BorderRadius.circular(40)),
-                          //         elevation: 16,
-                          //         child: Container(
-                          //           child: NumPad(
-                          //             controller: npc,
-                          //             pinInputLength: 9,
-                          //           ),
-                          //         ),
-                          //       );
-                          //     });
                         },
                         child: RichText(
                           text: TextSpan(
