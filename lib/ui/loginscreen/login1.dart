@@ -1,4 +1,4 @@
-
+import 'package:driverapp/api/delivery.dart';
 import 'package:driverapp/model/driverlist_model.dart';
 import 'package:driverapp/ui/keypad/numpad.dart';
 import 'package:driverapp/ui/keypad/numpad_controller.dart';
@@ -11,7 +11,7 @@ class LoginScreen1 extends StatefulWidget {
 }
 
 class _LoginScreen1State extends State<LoginScreen1> {
-   // Initially password is obscure
+  // Initially password is obscure
   bool _obscureText = true;
 
   String _passCode;
@@ -22,33 +22,34 @@ class _LoginScreen1State extends State<LoginScreen1> {
       _obscureText = !_obscureText;
     });
   }
-  //final  String data =  
+
+  //final  String data =
   //final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-    List<DriverList> _staffLIst = [];
+  List<DriverList> _staffLIst = [];
   String staffListregion;
   TextEditingController passCode = TextEditingController();
- 
-  var _currencies = [
-      "Please Select Driver",
-    "Food",
-    "Transport",
-    "Personal",
-    "Shopping",
-    "Medical",
-    "Rent",
-    "Movie",
-    "Salary",
-  
-  ];
-  String _currentSelectedValue = 'Please Select Driver';
+
+  // var _currencies = [
+  //     "Please Select Driver",
+  //   "Food",
+  //   "Transport",
+  //   "Personal",
+  //   "Shopping",
+  //   "Medical",
+  //   "Rent",
+  //   "Movie",
+  //   "Salary",
+
+  // ];
+  // String _currentSelectedValue = 'Please Select Driver';
 
   NumPadController npc = NumPadController();
   @override
   void initState() {
     super.initState();
-    // _staffLIst = API.driverList().then((result) {
-    // syllabus = result.staffList;
-    // });
+    _staffLIst = API.driverList().then((result) {
+      syllabus = result.staffList;
+    });
     print("driver*****");
     /* Listener for the numpad controller. */
     npc.addListener(() {
@@ -59,7 +60,7 @@ class _LoginScreen1State extends State<LoginScreen1> {
         }
       }
     });
-   // getChapter =  API.getChapter(null);
+    // getChapter =  API.getChapter(null);
   }
 
   @override
@@ -98,67 +99,60 @@ class _LoginScreen1State extends State<LoginScreen1> {
               width: 100,
             ),
 
+            DropdownButtonFormField(
+              icon: Icon(
+                Icons.keyboard_arrow_down,
+                size: 24,
+                color: Color(0xFF09557A),
+              ),
 
-// DropdownButtonFormField(
-//    /// iconEnabledColor: Strings.themeColor,
-//     icon: Icon(
-//       Icons.keyboard_arrow_down,
-//       size: 24,
-//       color: Color(0xFF09557A),
-//     ),
+              isExpanded: true,
+              hint: Padding(
+                padding: const EdgeInsets.only(bottom: 5),
+                child: Text(
+                  "Select Syllabus",
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 10,
+                  ),
+                ),
+              ),
 
-//     isExpanded: true,
-//     hint: Padding(
-//       padding:
-//           const EdgeInsets.only(bottom: 5),
-//       child: Text(
-//         "Select Syllabus",
-//         style: TextStyle(
-//           color: Colors.grey,
-//           fontSize: 10,
-//         ),
-//       ),
-//     ),
+              // value: _to,
+              // hint: Text(_chooseOffice),
+              decoration: InputDecoration(
+                  contentPadding: EdgeInsets.only(bottom: 10, left: 5),
+                  hintStyle: TextStyle(
+                    color: Colors.grey,
+                  ),
+                  // hintText: "Syllabus Name",
 
-//     // value: _to,
-//     // hint: Text(_chooseOffice),
-//     decoration: InputDecoration(
-//         contentPadding: EdgeInsets.only(
-//             bottom: 10, left: 5),
-//         hintStyle: TextStyle(
-//             color: Colors.grey,
-//            // fontSize: Strings.fontSize
-//            ),
-//         // hintText: "Syllabus Name",
+                  enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.transparent))),
 
-//         enabledBorder: UnderlineInputBorder(
-//             borderSide: BorderSide(
-//                 color: Colors.transparent))),
+              onChanged: (newValue) {
+                print(newValue);
 
-//     onChanged: (newValue) {
-//       print(newValue);
-//       exam.setExamId(newValue["examId"]);
-//       examCatId = newValue["examCatId"];
+                exam.setExamId(newValue["examId"]);
+                examCatId = newValue["examCatId"];
 
-//       // setState(() {
-//       //   examId = newValue["examId"];
-//       //   // getSubject = PostRestServices.getSubject(
-//       //   //     newValue["examId"]);
-//       // });
-//     },
-//     items: syllabus != null
-//         ? syllabus.map<DropdownMenuItem>(
-//             (Map<String, dynamic> slb) {
-//             return DropdownMenuItem(
-//                 child: Text(slb["examName"],
-//                     style: TextStyle(
-//                         color: Colors.grey,
-//                        )),
-//                 value: slb);
-//           }).toList()
-//         : Loader(),
-//   ),
-            
+                // setState(() {
+                //   examId = newValue["examId"];
+                //   // getSubject = PostRestServices.getSubject(
+                //   //     newValue["examId"]);
+                // });
+              },
+              items: syllabus != null
+                  ? syllabus.map<DropdownMenuItem>((Map<String, dynamic> slb) {
+                      return DropdownMenuItem(
+                          child: Text(slb["examName"],
+                              style: TextStyle(
+                                color: Colors.grey,
+                              )),
+                          value: slb);
+                    }).toList()
+                  : Loader(),
+            ),
 
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -207,8 +201,10 @@ class _LoginScreen1State extends State<LoginScreen1> {
                 ),
               ),
             ),
-        
-               SizedBox(height: 10,),
+
+            SizedBox(
+              height: 10,
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Container(
@@ -219,60 +215,66 @@ class _LoginScreen1State extends State<LoginScreen1> {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 15),
                   child: Container(
-        child: new Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Container(
-              width: 250,
-              child: new TextFormField(
-                controller: passCode,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                    hintText: 'Pass Code',
-                    border: InputBorder.none,
-                    icon: const Icon(Icons.qr_code_scanner_sharp, size: 20,)),
-                validator: (val) => val.length < 8 ? 'Passcode too short.' : null,
-                onSaved: (val) => _passCode = val,
-                obscureText: _obscureText,
-              ),
-            ),
-            new FlatButton(
-                onPressed: _toggle,
-                child: new Icon(_obscureText ? Icons.visibility_off : Icons.visibility))
-          ],
-        ),
-      ),
+                    child: new Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Container(
+                          width: 250,
+                          child: new TextFormField(
+                            controller: passCode,
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                                hintText: 'Pass Code',
+                                border: InputBorder.none,
+                                icon: const Icon(
+                                  Icons.qr_code_scanner_sharp,
+                                  size: 20,
+                                )),
+                            validator: (val) =>
+                                val.length < 8 ? 'Passcode too short.' : null,
+                            onSaved: (val) => _passCode = val,
+                            obscureText: _obscureText,
+                          ),
+                        ),
+                        new FlatButton(
+                            onPressed: _toggle,
+                            child: new Icon(_obscureText
+                                ? Icons.visibility_off
+                                : Icons.visibility))
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
 
-      //       Center(
-      //   child: new Column(
-      //     mainAxisAlignment: MainAxisAlignment.center,
-      //     children: <Widget>[
-      //       DropdownButtonHideUnderline(
-      //         child: new DropdownButton<String>(
-      //           hint: new Text("Select Region"),
-      //           value: staffListregion,
-      //           isDense: true,
-      //           onChanged: (String newValue) {
-      //             setState(() {
-      //               staffListregion = newValue;
-      //             });
-      //             print(staffListregion);
-      //           },
-      //           items: _staffLIst.map((DriverList map) {
-      //             return new DropdownMenuItem<String>(
-      //               value: map.staffList[0].staffId,
-      //               child: new Text(map.staffList[0].staffName,
-      //                   style: new TextStyle(color: Colors.black)),
-      //             );
-      //           }).toList(),
-      //         ),
-      //       ),
-      //     ],
-      //   ),
-      // ),
+            //       Center(
+            //   child: new Column(
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     children: <Widget>[
+            //       DropdownButtonHideUnderline(
+            //         child: new DropdownButton<String>(
+            //           hint: new Text("Select Region"),
+            //           value: staffListregion,
+            //           isDense: true,
+            //           onChanged: (String newValue) {
+            //             setState(() {
+            //               staffListregion = newValue;
+            //             });
+            //             print(staffListregion);
+            //           },
+            //           items: _staffLIst.map((DriverList map) {
+            //             return new DropdownMenuItem<String>(
+            //               value: map.staffList[0].staffId,
+            //               child: new Text(map.staffList[0].staffName,
+            //                   style: new TextStyle(color: Colors.black)),
+            //             );
+            //           }).toList(),
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
 
             SizedBox(height: 10),
             Padding(
@@ -293,18 +295,18 @@ class _LoginScreen1State extends State<LoginScreen1> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 35, vertical: 12),
                       child: InkWell(
-                                   //onTap: () async {
-                          // Navigator.of(context).push(new MaterialPageRoute(
-                          //   builder: (BuildContext context) => new Home(),
-                          // ));
-                         
-                       // driverList();
+                        //onTap: () async {
+                        // Navigator.of(context).push(new MaterialPageRoute(
+                        //   builder: (BuildContext context) => new Home(),
+                        // ));
+
+                        // driverList();
                         // API.deliveryDetail()
                         //             .then((result) async {
                         //           print("**********"+result.toString());
                         //             });
 
-                     //   },
+                        //   },
                         onTap: () {
                           showDialog(
                               context: context,
