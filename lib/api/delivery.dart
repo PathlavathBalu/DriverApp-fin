@@ -8,15 +8,16 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 
 class API {
-static Future<dynamic> driverList() async {
+static Future<dynamic> driverList(String authcode, String devcode) async {
   Dio client = Dio();
   var responseJson;
 
   try {
     FormData formData = new FormData.fromMap({
-      'device_code': '6618',
+        'auth_code': authcode,
+      'device_code': devcode,
       'task': 'get_deliverydriver_list',
-      'auth_code': "HZFAYW",
+    
     });
 
     final response = await client.post(

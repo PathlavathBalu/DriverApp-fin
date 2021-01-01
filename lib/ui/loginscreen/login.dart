@@ -155,11 +155,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                 print("*** customerDetail" + customerDetails);
                                 if (customerDetails == null) {
                                   print("Server Error");
-                                } else if (customerDetails
-                                    .toLowerCase()
-                                    .contains("1")) {
+                                } else if (customerDetails.toLowerCase().contains("1")) {
                                   Fluttertoast.showToast(
-                                      msg: "Login Sucess",
+                                      msg: customerDetails,
                                       toastLength: Toast.LENGTH_SHORT,
                                       gravity: ToastGravity.CENTER,
                                       timeInSecForIosWeb: 1,
@@ -182,7 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   if (autCode.text.trim().isNotEmpty &&
                                       devCode.text.trim().isNotEmpty) {
                                     Fluttertoast.showToast(
-                                        msg: "Invalid Authcode",
+                                        msg: customerDetails,
                                         toastLength: Toast.LENGTH_SHORT,
                                         gravity: ToastGravity.CENTER,
                                         timeInSecForIosWeb: 1,
@@ -190,9 +188,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                         textColor: Colors.blue,
                                         fontSize: 16.0);
                                   } else {
-                                    print("Invalid Authcode");
+                                    print(customerDetails);
                                     Fluttertoast.showToast(
-                                        msg: "Invalid Authcode",
+                                        msg: customerDetails,
                                         toastLength: Toast.LENGTH_SHORT,
                                         gravity: ToastGravity.CENTER,
                                         timeInSecForIosWeb: 1,
@@ -207,7 +205,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       devCode.text.trim().isNotEmpty) {
                                     print("3");
                                     Fluttertoast.showToast(
-                                        msg: "Invalid deviceCode",
+                                        msg: customerDetails,
                                         toastLength: Toast.LENGTH_SHORT,
                                         gravity: ToastGravity.CENTER,
                                         timeInSecForIosWeb: 1,
@@ -224,35 +222,27 @@ class _LoginScreenState extends State<LoginScreen> {
                                         textColor: Colors.blue,
                                         fontSize: 16.0);
                                   }
-                                  print("Invalid device code");
                                 } else if (customerDetails
                                     .toLowerCase()
                                     .contains("4")) {
                                   Fluttertoast.showToast(
-                                      msg: "Already used this device",
+                                      msg: customerDetails,
                                       toastLength: Toast.LENGTH_SHORT,
                                       gravity: ToastGravity.CENTER,
                                       timeInSecForIosWeb: 1,
                                       backgroundColor: Colors.black,
                                       textColor: Colors.blue,
                                       fontSize: 16.0);
-                                  print("Already used this device");
                                 } else {
                                   Fluttertoast.showToast(
-                                      msg: "Faild to verify",
+                                      msg: customerDetails,
                                       toastLength: Toast.LENGTH_SHORT,
                                       gravity: ToastGravity.CENTER,
                                       timeInSecForIosWeb: 1,
                                       backgroundColor: Colors.black,
                                       textColor: Colors.blue,
                                       fontSize: 16.0);
-                                  print("ok");
                                 }
-                                print("autCode.text.trim()" +
-                                    autCode.text.trim());
-
-                                print("devCode.text.trim()" +
-                                    devCode.text.trim());
                               });
                               // Navigator.of(context).push(new MaterialPageRoute(
                               //   builder: (BuildContext context) =>

@@ -48,7 +48,7 @@ Future<LoginModel> Login(String authCode, String deviceCode) async {
 }
 
 
-Future<LoginAuth> loginAuthntication(String deviceCode, String authCode, String staffId, String passcode) async {
+Future<LoginAuth> loginAuthntication(String authCode, String deviceCode, String staffId, String passcode) async {
   Dio client = Dio();
   var responseJson;
   SharedPreferences sharedPreferences;
@@ -67,13 +67,16 @@ Future<LoginAuth> loginAuthntication(String deviceCode, String authCode, String 
       'https://www.uat.deveposhybrid.uk/index.php/webservices',
       data: formData,
     );
-    print("suggestions response.body" + formData.fields.toString());
-    responseJson = json.decode(response.toString());
+    print("biuguigigg response.body" + formData.fields.toString());
+    
+  
     if (response.statusCode == 503) {
       throw Exception('Check your LoginAuthntcation');
     }
 
     if (response.statusCode == 200) {
+    print("response.statusCode == 200" + response.statusCode.toString());
+responseJson = json.decode(response.toString());
       print(
           'api_provider LoginAuthntcation responseJson==' + responseJson.toString());
 

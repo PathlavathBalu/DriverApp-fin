@@ -2,7 +2,6 @@ import 'package:driverapp/api/delivery.dart';
 import 'package:driverapp/api/rest_services.dart';
 import 'package:driverapp/ui/keypad/numpad.dart';
 import 'package:driverapp/ui/keypad/numpad_controller.dart';
-import 'package:driverapp/ui/loginscreen/home.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -77,7 +76,7 @@ class _LoginScreen1State extends State<LoginScreen1> {
   }
 
   getData() async {
-    await API.driverList().then((result) {
+    await API.driverList(widget.authcode, widget.devcode).then((result) {
       print(result);
 
       setState(() {
@@ -243,58 +242,61 @@ class _LoginScreen1State extends State<LoginScreen1> {
                               "message",
                             );
                             print("*** customerDetail" + customerDetails);
+                            // showDialog(
+                            // context: context,
+                            // builder: (context) {
+                            //   return Dialog(
+                            //     shape: RoundedRectangleBorder(
+                            //         borderRadius: BorderRadius.circular(40)),
+                            //     elevation: 16,
+                            //     child: Container(
+                            //       child: NumPad(
+                            //         controller: npc,
+                            //         pinInputLength: 9,
+                            //       ),
+                            //     ),
+                            //   );
+                            // });
+
+                            String s = customerDetails;
+
+                            if (s.contains("Correct")) {
+                              print("lbiufgufuf" + customerDetails);
+                              Fluttertoast.showToast(
+                                  msg: customerDetails,
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.CENTER,
+                                  timeInSecForIosWeb: 1,
+                                  backgroundColor: Colors.black,
+                                  textColor: Colors.blue,
+                                  fontSize: 16.0);
+                              print("Success");
                               showDialog(
-                              context: context,
-                              builder: (context) {
-                                return Dialog(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(40)),
-                                  elevation: 16,
-                                  child: Container(
-                                    child: NumPad(
-                                      controller: npc,
-                                      pinInputLength: 9,
-                                    ),
-                                  ),
-                                );
-                              });
-                            // if (customerDetails == "Already logged in") {
-                            //   Fluttertoast.showToast(
-                            //       msg: customerDetails,
-                            //       toastLength: Toast.LENGTH_SHORT,
-                            //       gravity: ToastGravity.CENTER,
-                            //       timeInSecForIosWeb: 1,
-                            //       backgroundColor: Colors.black,
-                            //       textColor: Colors.blue,
-                            //       fontSize: 16.0);
-                            //   print("Success");
-                            //   showDialog(
-                            //       context: context,
-                            //       builder: (context) {
-                            //         return Dialog(
-                            //           shape: RoundedRectangleBorder(
-                            //               borderRadius:
-                            //                   BorderRadius.circular(40)),
-                            //           elevation: 16,
-                            //           child: Container(
-                            //             child: NumPad(
-                            //               controller: npc,
-                            //               pinInputLength: 9,
-                            //             ),
-                            //           ),
-                            //         );
-                            //       });
-                            // } else {
-                            //   Fluttertoast.showToast(
-                            //       msg: customerDetails,
-                            //       toastLength: Toast.LENGTH_SHORT,
-                            //       gravity: ToastGravity.CENTER,
-                            //       timeInSecForIosWeb: 1,
-                            //       backgroundColor: Colors.black,
-                            //       textColor: Colors.blue,
-                            //       fontSize: 16.0);
-                         
-                           // }
+                                  context: context,
+                                  builder: (context) {
+                                    return Dialog(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(40)),
+                                      elevation: 16,
+                                      child: Container(
+                                        child: NumPad(
+                                          controller: npc,
+                                          pinInputLength: 9,
+                                        ),
+                                      ),
+                                    );
+                                  });
+                            } else {
+                              Fluttertoast.showToast(
+                                  msg: "customerDetails>>>else",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.CENTER,
+                                  timeInSecForIosWeb: 1,
+                                  backgroundColor: Colors.black,
+                                  textColor: Colors.blue,
+                                  fontSize: 16.0);
+                            }
                           });
                           // .then((result) async {
                           // SharedPreferences preferences =
