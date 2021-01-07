@@ -1,8 +1,10 @@
 import 'package:driverapp/api/rest_services.dart';
 import 'package:driverapp/ui/loginscreen/home.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math';
 import 'package:vector_math/vector_math_64.dart' as vector_math;
 import 'package:flutter/services.dart';
@@ -13,7 +15,15 @@ import './numpad_controller.dart';
 
 /* Numpad widget */
 class NumPad extends StatefulWidget {
+  final String authcode;
+  final String devcode;
+// final String staffId;
+// final String passcode;
+
+  // receive data from the FirstScreen as a parameter
+
   final TextEditingController pinInputController = TextEditingController();
+  TextEditingController floatAmount = TextEditingController();
 
   /* Constructor Parameters. */
   final NumPadController controller;
@@ -27,6 +37,8 @@ class NumPad extends StatefulWidget {
 
   NumPad({
     @required this.controller,
+    this.authcode,
+    this.devcode,
     this.backgroundColor = Colors.white,
     this.keyColor = Colors.black26,
     this.keyFont,
@@ -67,6 +79,7 @@ class _NumPadState extends State<NumPad> with SingleTickerProviderStateMixin {
   void initState() {
     print("initializing numpad");
     super.initState();
+    
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     int pinInputLength = widget.pinInputLength;
     inputController = widget.pinInputController;
@@ -178,12 +191,56 @@ class _NumPadState extends State<NumPad> with SingleTickerProviderStateMixin {
                             ),
                             child: FlatButton(
                               onPressed: () {
+                                 fetchData();
+     print("*******Dayta"+fetchData().toString());
+                                // fetchWritingDetails();
+                                // print("sddssd"+fetchWritingDetails().toString());
                                 // Navigator.of(context)
                                 //     .push(new MaterialPageRoute(
                                 //   builder: (BuildContext context) => new Home(),
                                 // ));
-                                floatAmount();
-                              },
+                                //   
+                               // floatAmount();
+
+                                // floatAmount().then((result) async {
+                                //   SharedPreferences preferences =
+                                //       await SharedPreferences.getInstance();
+                                //   String floatamount = preferences.getString(
+                                //     "float",
+                                //   );
+                                //   print("*** customerDetail" + floatamount);
+
+                                //   String s = floatamount;
+
+                                //   if (s.contains("Inserted into table")) {
+                                //     print("lbiufgufuf" + floatamount);
+                                //     Fluttertoast.showToast(
+                                //         msg: floatamount,
+                                //         toastLength: Toast.LENGTH_SHORT,
+                                //         gravity: ToastGravity.CENTER,
+                                //         timeInSecForIosWeb: 1,
+                                //         backgroundColor: Colors.black,
+                                //         textColor: Colors.blue,
+                                //         fontSize: 16.0);
+                                //     print("Success");
+                                //     Navigator.of(context)
+                                //         .push(new MaterialPageRoute(
+                                //       builder: (BuildContext context) =>
+                                //           new Home(),
+                                //     ));
+                                //   } else {
+                                //     Fluttertoast.showToast(
+                                //         msg: "floatamount>>>else",
+                                //         toastLength: Toast.LENGTH_SHORT,
+                                //         gravity: ToastGravity.CENTER,
+                                //         timeInSecForIosWeb: 1,
+                                //         backgroundColor: Colors.black,
+                                //         textColor: Colors.blue,
+                                //         fontSize: 16.0);
+                                //   }
+                                // });
+                               
+                               },
                               child: Padding(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 16),

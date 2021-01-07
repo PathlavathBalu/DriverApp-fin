@@ -1,9 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:driverapp/model/get_driverDetails.dart';
 import 'package:driverapp/model/loginAuth.dart';
 import 'package:driverapp/model/login_model.dart';
+import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 Future<LoginModel> Login(String authCode, String deviceCode) async {
   Dio client = Dio();
@@ -29,8 +32,7 @@ Future<LoginModel> Login(String authCode, String deviceCode) async {
     }
 
     if (response.statusCode == 200) {
-      print(
-          'api_provider suggestions responseJson==' + responseJson.toString());
+      print('api_provider suggestions responseJson==' + responseJson.toString());
 
       sharedPreferences = await SharedPreferences.getInstance();
       Map decode_options = jsonDecode(response.toString());
@@ -104,7 +106,7 @@ Future<dynamic> floatAmount() async {
 
   try {
     FormData formData = new FormData.fromMap({
-      'device_code': '6635',
+      'device_code': '6669',
       'task': 'driver_float_amount',
       'app_name': 'driver',
       'staff_id': '68',
@@ -134,7 +136,7 @@ Future<dynamic> floatAmount() async {
     } else {
       throw Exception('Failed float Amount');
     }
-  } catch (error) {
+  } catch (error) { 
     if (error is SocketException) {
       throw Exception('Check your floatAmnt');
     }
@@ -142,8 +144,42 @@ Future<dynamic> floatAmount() async {
 }
 
 
+
+// final String _endpoint = "https://www.uat.deveposhybrid.uk/index.php/webservices?task=get_driver_details&auth_code=HZFAYW&staff_id=68&display_flag=3";
+
+// Client client = Client();
+
+// Future<List<getDriver>> fetchWritingDetails() async {
+// http.Response response = await http.get(
+// _endpoint);
+// var responseJson = json.decode(response.body);
+// print("***********"+responseJson);
+// return (responseJson['list'] as List)
+// .map((p) => getDriver.fromJson(p))
+// .toList();
+// }
+
+Future<getDriver> fetchData() async {
+    getDriver results = new getDriver();
+    final response = await http
+        .get('https://www.uat.deveposhybrid.uk/index.php/webservices?task=get_driver_details&auth_code=HZFAYW&staff_id=68&display_flag=3');
+    if (response.statusCode == 200 || json != null) {
+      print("response.statusCode == "+ response.statusCode.toString());
+      Map jsonParsed = json.decode(response.body);
+      results = getDriver.fromJson(jsonParsed);
+      print("********" +results.toString());
+      return results;
+    } else {
+      print('Request failed with status: ${response.statusCode}');
+      throw Exception('Failed to load post');
+    }
+  }
+
+
+
+
 // Future<List<DriverList>> driverDetail() async {
-//   Dio client = Dio();
+//   Dio client = Dio();x
 //   var responseJson;
 
 //   try {

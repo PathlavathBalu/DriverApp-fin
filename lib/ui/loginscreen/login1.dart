@@ -242,21 +242,6 @@ class _LoginScreen1State extends State<LoginScreen1> {
                               "message",
                             );
                             print("*** customerDetail" + customerDetails);
-                            // showDialog(
-                            // context: context,
-                            // builder: (context) {
-                            //   return Dialog(
-                            //     shape: RoundedRectangleBorder(
-                            //         borderRadius: BorderRadius.circular(40)),
-                            //     elevation: 16,
-                            //     child: Container(
-                            //       child: NumPad(
-                            //         controller: npc,
-                            //         pinInputLength: 9,
-                            //       ),
-                            //     ),
-                            //   );
-                            // });
 
                             String s = customerDetails;
 
@@ -298,32 +283,6 @@ class _LoginScreen1State extends State<LoginScreen1> {
                                   fontSize: 16.0);
                             }
                           });
-                          // .then((result) async {
-                          // SharedPreferences preferences =
-                          //     await SharedPreferences.getInstance();
-
-                          // String customerDetails = preferences.getString(
-                          //   "message",
-                          // );
-
-                          //       print("*** customerDetail" + customerDetails);
-                          // }
-
-                          // showDialog(
-                          //     context: context,
-                          //     builder: (context) {
-                          //       return Dialog(
-                          //         shape: RoundedRectangleBorder(
-                          //             borderRadius: BorderRadius.circular(40)),
-                          //         elevation: 16,
-                          //         child: Container(
-                          //           child: NumPad(
-                          //             controller: npc,
-                          //             pinInputLength: 9,
-                          //           ),
-                          //         ),
-                          //       );
-                          //     });
                         },
                         child: RichText(
                           text: TextSpan(

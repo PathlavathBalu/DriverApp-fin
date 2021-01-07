@@ -155,7 +155,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                 print("*** customerDetail" + customerDetails);
                                 if (customerDetails == null) {
                                   print("Server Error");
-                                } else if (customerDetails.toLowerCase().contains("1")) {
+                                } else if (customerDetails
+                                    .toLowerCase()
+                                    .contains("1")) {
                                   Fluttertoast.showToast(
                                       msg: customerDetails,
                                       toastLength: Toast.LENGTH_SHORT,
@@ -170,10 +172,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                       context,
                                       SlideLeftRoute(
                                           page: LoginScreen1(
-                                              autCode.text.trim(),
-                                              devCode.text.trim(),
-                                              
-                                              )));
+                                        autCode.text.trim(),
+                                        devCode.text.trim(),
+                                      )));
                                 } else if (customerDetails
                                     .toLowerCase()
                                     .contains("2")) {
