@@ -1,3 +1,4 @@
+import 'dart:convert';
 class getDriver {
   Drivers drivers;
 
@@ -104,15 +105,15 @@ class Orders {
   String extraServiceTax;
   int deliveryCharges;
   String deliveryTax;
-  List<Null> deliveryTaxDetail;
+  List deliveryTaxDetail;
   String taxOnBill;
-  List<Null> orderTaxDetails;
+  List orderTaxDetails;
   String orderTaxFlag;
   String totalBill;
   int specialDisAmt;
   int redeemLoyaltyPoints;
   int totalRedeemLoyaltyAmount;
-  List<Null> extraChargeDetails;
+  List extraChargeDetails;
   int giftcardAmount;
   int couponDiscount;
   int staffDiscount;
@@ -143,9 +144,9 @@ class Orders {
       this.latitude,
       this.langitude,
       this.distance,
-      // this.orderType,
+      this.orderType,
       this.deviceCode,
-      // this.orderType,
+      this.orderType,
       this.tokenId,
       this.guestCount,
       this.taxAmount,
@@ -279,24 +280,18 @@ class Orders {
     data['extra_service_tax'] = this.extraServiceTax;
     data['delivery_charges'] = this.deliveryCharges;
     data['delivery_tax'] = this.deliveryTax;
-    // if (this.deliveryTaxDetail != null) {
-    //   data['delivery_tax_detail'] =
-    //       this.deliveryTaxDetail.map((v) => v.toJson()).toList();
-    // }
+    
+    data['delivery_tax_detail'] = this.deliveryTaxDetail;
     data['tax_on_bill'] = this.taxOnBill;
-    // if (this.orderTaxDetails != null) {
-    //   data['order_tax_details'] =
-    //       this.orderTaxDetails.map((v) => v.toJson()).toList();
-    // }
+      data['order_tax_details'] = this.orderTaxDetails;
     data['order_tax_flag'] = this.orderTaxFlag;
     data['total_bill'] = this.totalBill;
     data['special_dis_amt'] = this.specialDisAmt;
     data['redeem_loyalty_points'] = this.redeemLoyaltyPoints;
     data['total_redeem_loyalty_amount'] = this.totalRedeemLoyaltyAmount;
-    // if (this.extraChargeDetails != null) {
-    //   data['extra_charge_details'] =
-    //       this.extraChargeDetails.map((v) => v.toJson()).toList();
-    // }
+
+      data['extra_charge_details'] = this.extraChargeDetails;
+
     data['giftcard_amount'] = this.giftcardAmount;
     data['coupon_discount'] = this.couponDiscount;
     data['staff_discount'] = this.staffDiscount;
@@ -474,9 +469,9 @@ class Items {
     data['refund_staff'] = this.refundStaff;
     data['refund_type'] = this.refundType;
     data['refund_amount'] = this.refundAmount;
-    // if (this.subItems != null) {
-    //   data['sub_items'] = this.subItems.map((v) => v.toJson()).toList();
-    // }
+    if (this.subItems != null) {
+      data['sub_items'] = this.subItems.map((v) => v.toJson()).toList();
+    }
     if (this.modifiers != null) {
       data['modifiers'] = this.modifiers.map((v) => v.toJson()).toList();
     }
