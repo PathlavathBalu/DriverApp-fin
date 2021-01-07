@@ -1,4 +1,4 @@
-import 'dart:convert';
+
 class getDriver {
   Drivers drivers;
 
@@ -144,9 +144,9 @@ class Orders {
       this.latitude,
       this.langitude,
       this.distance,
-      this.orderType,
+      // this.orderType,
       this.deviceCode,
-      this.orderType,
+      // this.orderType,
       this.tokenId,
       this.guestCount,
       this.taxAmount,
@@ -470,7 +470,7 @@ class Items {
     data['refund_type'] = this.refundType;
     data['refund_amount'] = this.refundAmount;
     if (this.subItems != null) {
-      data['sub_items'] = this.subItems.map((v) => v.toJson()).toList();
+      data['sub_items'] = this.subItems;
     }
     if (this.modifiers != null) {
       data['modifiers'] = this.modifiers.map((v) => v.toJson()).toList();
